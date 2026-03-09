@@ -512,8 +512,11 @@
 
         // Получаем информацию о пользователе
         const user = tg.initDataUnsafe?.user;
+        console.log('Данные пользователя:', user); // Для отладки
+
         if (user) {
             currentUser = user;
+            // Проверка админа
             isAdmin = user.username === 'morion_1';
             
             document.getElementById('userName').textContent = `${user.first_name} ${user.last_name || ''}`.trim();
@@ -527,10 +530,29 @@
                 badge.textContent = '👑 Админ';
                 badge.className = 'user-badge badge-admin';
                 document.getElementById('addBtn').style.display = 'flex';
+                console.log('✅ Админ распознан, кнопка показана');
             } else {
                 badge.textContent = '👁️ Пользователь';
                 badge.className = 'user-badge badge-user';
+                document.getElementById('addBtn').style.display = 'none';
+                console.log('👁️ Обычный пользователь, кнопка скрыта');
             }
+        } else {
+            console.log('❌ Нет данных пользователя (тестовый режим)');
+            document.getElementById('userName').textContent = 'Тестовый режим';
+            document.getElementById('userUsername').textContent = 'не в Telegram';
+            document.getElementById('userAvatar').textContent = '👤';
+            document.getElementById('userBadge').textContent = '🧪 Тест';
+            // В тестовом режиме показываем кнопку для проверки
+            document.getElementById('addBtn').style.display = 'flex';
+        }
+
+        // Принудительное отображение для админа (на всякий случай)
+        if (user && user.username === 'morion_1') {
+            setTimeout(() => {
+                document.getElementById('addBtn').style.display = 'flex';
+                console.log('🔄 Принудительное отображение кнопки');
+            }, 500);
         }
 
         // Навигация
@@ -734,13 +756,13 @@
                     </div>
                 `;
                 
-                if (stats.stage_progress.length > 0) {
+                if (stats.stage_progress && stats.stage_progress.length > 0) {
                     html += '<h3 style="margin: 20px 0 10px;">📊 Прогресс по типам работ</h3>';
                     stats.stage_progress.forEach(item => {
                         html += `
                             <div class="item-card">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span>${item.emoji} ${item.name}</span>
+                                    <span>${item.emoji || '📌'} ${item.name}</span>
                                     <span>${item.percent}%</span>
                                 </div>
                                 <div class="progress-bar">
@@ -791,15 +813,19 @@
             
             const response = await sendAction('get_stages_for_select');
             
-            select.innerHTML = '';
-            response.data.forEach(stage => {
-                const option = document.createElement('option');
-                option.value = stage.id;
-                option.textContent = `${stage.name} | ПК${stage.start}-ПК${stage.end} (${stage.layers} слоев)`;
-                option.dataset.name = stage.name;
-                option.dataset.layers = stage.layers;
-                select.appendChild(option);
-            });
+            if (response.data && response.data.length > 0) {
+                select.innerHTML = '';
+                response.data.forEach(stage => {
+                    const option = document.createElement('option');
+                    option.value = stage.id;
+                    option.textContent = `${stage.name} | ПК${stage.start}-ПК${stage.end} (${stage.layers} слоев)`;
+                    option.dataset.name = stage.name;
+                    option.dataset.layers = stage.layers;
+                    select.appendChild(option);
+                });
+            } else {
+                select.innerHTML = '<option>Нет доступных этапов</option>';
+            }
         }
 
         // Добавление этапа
@@ -831,11 +857,21 @@
         // Добавление готового участка
         async function addReady() {
             const select = document.getElementById('readyStageSelect');
+            if (!select.value) {
+                tg.showPopup({ message: 'Выберите этап' });
+                return;
+            }
+            
             const stageId = parseInt(select.value);
             const stageName = select.options[select.selectedIndex].dataset.name;
             const start = parseInt(document.getElementById('readyStart').value);
             const end = parseInt(document.getElementById('readyEnd').value);
             const layer = parseInt(document.getElementById('readyLayer').value);
+            
+            if (!start || !end) {
+                tg.showPopup({ message: 'Введите пикеты' });
+                return;
+            }
             
             const response = await sendAction('add_ready', {
                 stage_id: stageId,

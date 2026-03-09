@@ -2,65 +2,79 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>ФИНАЛЬНЫЙ ТЕСТ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://telegram.org; script-src 'self' 'unsafe-inline' https://telegram.org; style-src 'self' 'unsafe-inline';">
+    <title>Учет строительства</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial; padding: 20px; text-align: center; }
-        button { 
-            background: #4CAF50; 
-            color: white; 
-            border: none; 
-            padding: 20px; 
-            margin: 10px; 
-            width: 300px; 
-            border-radius: 10px; 
-            font-size: 20px; 
-            cursor: pointer; 
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            text-align: center;
         }
-        #status { font-size: 24px; margin: 20px; }
+        button {
+            background: #2481cc;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            width: 250px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #status {
+            color: green;
+            font-weight: bold;
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>🔴 ФИНАЛЬНЫЙ ТЕСТ</h1>
-    <div id="status">⏳ Проверка...</div>
+    <h1>🚧 Учет строительства</h1>
+    <div id="status">✅ Telegram подключен</div>
     
-    <button onclick="sendData()">📤 ОТПРАВИТЬ ДАННЫЕ</button>
-    <button onclick="sendSimple()">📤 ПРОСТОЙ ТЕСТ</button>
-    <button onclick="sendJSON()">📤 JSON ТЕСТ</button>
-    
-    <div id="result" style="margin-top: 20px; padding: 20px; background: #f0f0f0;"></div>
+    <button onclick="sendCommand('stages')">🏗️ Этапы</button>
+    <button onclick="sendCommand('ready')">🚧 Готовые</button>
+    <button onclick="sendCommand('accepted')">✅ Сданные</button>
+    <button onclick="sendCommand('stats')">📊 Статистика</button>
+    <button onclick="sendCommand('employees')">👥 Сотрудники</button>
+    <button onclick="closeApp()">❌ Закрыть</button>
 
     <script>
-        const tg = Telegram.WebApp;
+        // Инициализация Telegram
+        const tg = window.Telegram.WebApp;
         tg.expand();
-        
-        document.getElementById('status').innerHTML = '✅ Telegram подключен';
-        document.getElementById('status').style.color = 'green';
-        
-        function showResult(msg) {
-            document.getElementById('result').innerHTML = msg;
-        }
-        
-        function sendData() {
-            showResult('📤 Отправка...');
-            tg.sendData("Простой текст");
-        }
-        
-        function sendSimple() {
-            showResult('📤 Отправка простого текста...');
-            tg.sendData("HELLO FROM WEB APP");
-        }
-        
-        function sendJSON() {
-            showResult('📤 Отправка JSON...');
-            tg.sendData(JSON.stringify({
-                test: true,
-                message: "Привет от Web App",
-                time: new Date().toISOString()
-            }));
-        }
-        
         tg.ready();
+
+        // Функция отправки
+        function sendCommand(cmd) {
+            console.log("Отправка команды:", cmd);
+            
+            // Показываем статус
+            const status = document.getElementById('status');
+            status.innerHTML = `⏳ Отправка ${cmd}...`;
+            
+            // Отправляем данные
+            tg.sendData(JSON.stringify({
+                command: cmd,
+                timestamp: new Date().toISOString()
+            }));
+            
+            // Вибрация
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // Закрытие
+        function closeApp() {
+            tg.close();
+        }
+
+        // Кнопка назад
+        tg.BackButton.show();
+        tg.BackButton.onClick(closeApp);
+
         console.log("Web App готов");
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Учет строительства дорог</title>
+    <title>Учет материалов</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -104,38 +104,77 @@
             color: var(--gray);
         }
 
-        .user-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
+        .form-group {
+            margin-bottom: 16px;
         }
 
-        .badge-admin {
-            background: var(--warning);
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
             color: var(--text-color);
         }
 
-        .badge-user {
-            background: var(--primary);
-            color: white;
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-color);
         }
 
-        .add-btn {
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .side-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .side-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .side-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .side-btn.left.active {
+            background: #3498db;
+        }
+
+        .side-btn.right.active {
+            background: #e67e22;
+        }
+
+        .submit-btn {
             background: var(--success);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 16px;
             border-radius: var(--border-radius);
             width: 100%;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin: 20px 0;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .items-list {
@@ -167,7 +206,15 @@
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
-            background: var(--primary);
+        }
+
+        .badge-left {
+            background: #3498db;
+            color: white;
+        }
+
+        .badge-right {
+            background: #e67e22;
             color: white;
         }
 
@@ -180,101 +227,71 @@
             margin: 4px 0;
         }
 
-        .item-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .item-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .btn-accept {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-reject {
-            background: var(--danger);
-            color: white;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
+        .stat-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
 
-        .modal-content h3 {
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .quick-piket {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
             margin-bottom: 16px;
         }
 
-        .modal-content input,
-        .modal-content select,
-        .modal-content textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid var(--gray);
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .modal-content textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
+        .quick-piket-btn {
+            padding: 8px;
+            background: var(--primary);
+            color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             cursor: pointer;
-        }
-
-        .btn-cancel {
-            background: var(--gray);
-            color: white;
-        }
-
-        .btn-confirm {
-            background: var(--success);
-            color: white;
         }
 
         .section {
@@ -306,177 +323,108 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-color);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.3s;
-        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Навигация -->
         <div class="nav-bar">
-            <button class="nav-btn active" data-section="stages">🏗️ Этапы</button>
-            <button class="nav-btn" data-section="ready">🚧 Готовые</button>
-            <button class="nav-btn" data-section="accepted">✅ Сданные</button>
+            <button class="nav-btn active" data-section="add">➕ Добавить</button>
+            <button class="nav-btn" data-section="search">🔍 Поиск</button>
             <button class="nav-btn" data-section="stats">📊 Статистика</button>
-            <button class="nav-btn" data-section="employees">👥 Сотрудники</button>
+            <button class="nav-btn" data-section="report">📋 Отчет</button>
         </div>
 
+        <!-- Информация о пользователе -->
         <div class="user-card" id="userCard">
             <div class="user-avatar" id="userAvatar">👤</div>
             <div class="user-info">
                 <div class="user-name" id="userName">Загрузка...</div>
                 <div class="user-username" id="userUsername"></div>
             </div>
-            <div class="user-badge" id="userBadge">👁️</div>
         </div>
 
-        <button class="add-btn" id="addBtn" style="display: none;">➕ Добавить</button>
-
-        <div id="stages-section" class="section active">
-            <div class="items-list" id="stagesList">
-                <div class="loading">Загрузка этапов...</div>
+        <!-- Секция добавления -->
+        <div id="add-section" class="section active">
+            <h2 style="margin-bottom: 20px;">➕ Добавить материал</h2>
+            
+            <div class="form-group">
+                <label>📏 Пикет (1-1000)</label>
+                <input type="number" id="piketNumber" min="1" max="1000" placeholder="Введите номер пикета">
             </div>
-        </div>
-
-        <div id="ready-section" class="section">
-            <div class="items-list" id="readyList">
-                <div class="loading">Загрузка готовых участков...</div>
+            
+            <div class="quick-piket">
+                <button class="quick-piket-btn" onclick="setPiket(1)">ПК1</button>
+                <button class="quick-piket-btn" onclick="setPiket(10)">ПК10</button>
+                <button class="quick-piket-btn" onclick="setPiket(50)">ПК50</button>
+                <button class="quick-piket-btn" onclick="setPiket(100)">ПК100</button>
+                <button class="quick-piket-btn" onclick="setPiket(500)">ПК500</button>
             </div>
-        </div>
-
-        <div id="accepted-section" class="section">
-            <div class="items-list" id="acceptedList">
-                <div class="loading">Загрузка истории сдачи...</div>
+            
+            <div class="form-group">
+                <label>⬅️➡️ Сторона</label>
+                <div class="side-buttons">
+                    <button class="side-btn left" id="leftSideBtn" onclick="selectSide('left')">⬅️ Левая</button>
+                    <button class="side-btn right" id="rightSideBtn" onclick="selectSide('right')">➡️ Правая</button>
+                </div>
             </div>
+            
+            <div class="form-group">
+                <label>🧱 Материал</label>
+                <select id="materialSelect">
+                    <option value="">Выберите материал</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>📦 Объем</label>
+                <input type="number" id="volume" step="0.01" min="0" placeholder="Введите объем">
+            </div>
+            
+            <div class="form-group">
+                <label>📝 Примечание</label>
+                <textarea id="notes" placeholder="Дополнительная информация"></textarea>
+            </div>
+            
+            <button class="submit-btn" onclick="addMaterial()">💾 СОХРАНИТЬ</button>
         </div>
 
+        <!-- Секция поиска -->
+        <div id="search-section" class="section">
+            <h2 style="margin-bottom: 20px;">🔍 Поиск по пикету</h2>
+            
+            <div class="search-box">
+                <input type="number" id="searchPiket" min="1" max="1000" placeholder="Введите номер пикета">
+                <button onclick="searchPiket()">Найти</button>
+            </div>
+            
+            <div class="side-buttons" style="margin-bottom: 20px;">
+                <button class="side-btn left" onclick="filterSide('left')">⬅️ Левая</button>
+                <button class="side-btn right" onclick="filterSide('right')">➡️ Правая</button>
+                <button class="side-btn" onclick="filterSide('all')">Все</button>
+            </div>
+            
+            <div id="searchResults" class="items-list"></div>
+        </div>
+
+        <!-- Секция статистики -->
         <div id="stats-section" class="section">
+            <h2 style="margin-bottom: 20px;">📊 Статистика</h2>
             <div id="statsContent"></div>
         </div>
 
-        <div id="employees-section" class="section">
-            <div class="items-list" id="employeesList">
-                <div class="loading">Загрузка сотрудников...</div>
+        <!-- Секция отчета -->
+        <div id="report-section" class="section">
+            <h2 style="margin-bottom: 20px;">📋 Отчет за период</h2>
+            
+            <div class="side-buttons" style="margin-bottom: 20px;">
+                <button class="side-btn" onclick="loadReport(1)">1 день</button>
+                <button class="side-btn" onclick="loadReport(7)">7 дней</button>
+                <button class="side-btn" onclick="loadReport(30)">30 дней</button>
+                <button class="side-btn" onclick="loadReport(90)">90 дней</button>
             </div>
-        </div>
-
-        <!-- Модальное окно добавления этапа -->
-        <div class="modal" id="addStageModal">
-            <div class="modal-content">
-                <h3>➕ Добавить этап</h3>
-                <select id="stageType">
-                    <option value="Снятие ПРС">Снятие ПРС</option>
-                    <option value="Устройство замены основания">Устройство замены основания</option>
-                    <option value="Устройство земляного полотна">Устройство земляного полотна</option>
-                    <option value="Устройство дополнительного слоя">Устройство дополнительного слоя</option>
-                    <option value="Устройство несущего слоя">Устройство несущего слоя</option>
-                    <option value="Устройство покрытия">Устройство покрытия</option>
-                </select>
-                <input type="number" id="stageStart" placeholder="Начальный пикет (1400-1900)" min="1400" max="1900">
-                <input type="number" id="stageEnd" placeholder="Конечный пикет (1400-1900)" min="1400" max="1900">
-                <input type="number" id="stageLayers" placeholder="Количество слоев" min="1" max="3" value="1">
-                <div class="modal-buttons">
-                    <button class="btn-cancel" id="cancelStageBtn">Отмена</button>
-                    <button class="btn-confirm" id="createStageBtn">Создать</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Модальное окно добавления готового участка -->
-        <div class="modal" id="addReadyModal">
-            <div class="modal-content">
-                <h3>➕ Отметить готовый участок</h3>
-                <select id="readyStageSelect"></select>
-                <input type="number" id="readyStart" placeholder="Начальный пикет">
-                <input type="number" id="readyEnd" placeholder="Конечный пикет">
-                <input type="number" id="readyLayer" placeholder="Номер слоя" min="1" value="1">
-                <div class="modal-buttons">
-                    <button class="btn-cancel" id="cancelReadyBtn">Отмена</button>
-                    <button class="btn-confirm" id="createReadyBtn">Отметить</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Модальное окно добавления сотрудника -->
-        <div class="modal" id="addEmployeeModal">
-            <div class="modal-content">
-                <h3>➕ Добавить сотрудника</h3>
-                <input type="text" id="employeeName" placeholder="ФИО">
-                <select id="employeePosition">
-                    <option value="Дорожный рабочий">Дорожный рабочий</option>
-                    <option value="Мастер">Мастер</option>
-                    <option value="Прораб">Прораб</option>
-                    <option value="Начальник участка">Начальник участка</option>
-                </select>
-                <input type="tel" id="employeePhone" placeholder="Телефон">
-                <div class="modal-buttons">
-                    <button class="btn-cancel" id="cancelEmployeeBtn">Отмена</button>
-                    <button class="btn-confirm" id="createEmployeeBtn">Добавить</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Модальное окно принятия -->
-        <div class="modal" id="acceptModal">
-            <div class="modal-content">
-                <h3>✅ Принять участок</h3>
-                <p id="acceptInfo"></p>
-                <div class="modal-buttons">
-                    <button class="btn-cancel" id="cancelAcceptBtn">Отмена</button>
-                    <button class="btn-confirm" id="acceptBtn">Принять</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Модальное окно отклонения -->
-        <div class="modal" id="rejectModal">
-            <div class="modal-content">
-                <h3>❌ Отклонить участок</h3>
-                <p id="rejectInfo"></p>
-                <textarea id="rejectReason" placeholder="Причина отклонения"></textarea>
-                <div class="modal-buttons">
-                    <button class="btn-cancel" id="cancelRejectBtn">Отмена</button>
-                    <button class="btn-confirm" id="rejectBtn">Отклонить</button>
-                </div>
-            </div>
+            
+            <div id="reportContent" class="items-list"></div>
         </div>
     </div>
 
@@ -486,46 +434,21 @@
         tg.expand();
         tg.ready();
 
-        // Состояние приложения
-        let currentUser = null;
-        let isAdmin = false;
-        let currentSection = 'stages';
-        let selectedSectionId = null;
+        let currentSide = null;
+        let materialsList = [];
 
         // Получаем информацию о пользователе
         const user = tg.initDataUnsafe?.user;
-        console.log('Данные пользователя:', user);
-
         if (user) {
-            currentUser = user;
-            isAdmin = user.username === 'morion_1';
-            
             document.getElementById('userName').textContent = `${user.first_name} ${user.last_name || ''}`.trim();
             document.getElementById('userUsername').textContent = user.username ? `@${user.username}` : 'нет username';
             
             const initials = (user.first_name.charAt(0) + (user.last_name?.charAt(0) || '')).toUpperCase();
             document.getElementById('userAvatar').textContent = initials || '👤';
-            
-            const badge = document.getElementById('userBadge');
-            if (isAdmin) {
-                badge.textContent = '👑 Админ';
-                badge.className = 'user-badge badge-admin';
-                document.getElementById('addBtn').style.display = 'flex';
-                console.log('✅ Админ распознан, кнопка показана');
-            } else {
-                badge.textContent = '👁️ Пользователь';
-                badge.className = 'user-badge badge-user';
-                document.getElementById('addBtn').style.display = 'none';
-                console.log('👁️ Обычный пользователь, кнопка скрыта');
-            }
-        } else {
-            console.log('❌ Нет данных пользователя (тестовый режим)');
-            document.getElementById('userName').textContent = 'Тестовый режим';
-            document.getElementById('userUsername').textContent = 'не в Telegram';
-            document.getElementById('userAvatar').textContent = '👤';
-            document.getElementById('userBadge').textContent = '🧪 Тест';
-            document.getElementById('addBtn').style.display = 'flex';
         }
+
+        // Загружаем материалы при старте
+        loadMaterials();
 
         // Навигация
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -535,49 +458,44 @@
                 
                 btn.classList.add('active');
                 const section = btn.dataset.section;
-                currentSection = section;
                 document.getElementById(`${section}-section`).classList.add('active');
                 
-                loadSection(section);
+                if (section === 'stats') loadStatistics();
+                if (section === 'report') loadReport(7);
             });
         });
 
-        // Кнопка добавления
-        document.getElementById('addBtn').addEventListener('click', () => {
-            if (currentSection === 'stages') {
-                openModal('addStageModal');
-            } else if (currentSection === 'ready') {
-                loadStagesForSelect();
-                openModal('addReadyModal');
-            } else if (currentSection === 'employees') {
-                openModal('addEmployeeModal');
+        // Выбор стороны
+        window.selectSide = function(side) {
+            currentSide = side;
+            document.getElementById('leftSideBtn').classList.remove('active');
+            document.getElementById('rightSideBtn').classList.remove('active');
+            document.getElementById(`${side}SideBtn`).classList.add('active');
+        };
+
+        // Быстрый выбор пикета
+        window.setPiket = function(piket) {
+            document.getElementById('piketNumber').value = piket;
+        };
+
+        // Загрузка материалов
+        async function loadMaterials() {
+            try {
+                const response = await sendAction('get_materials');
+                if (response.success && response.data) {
+                    materialsList = response.data;
+                    const select = document.getElementById('materialSelect');
+                    select.innerHTML = '<option value="">Выберите материал</option>';
+                    response.data.forEach(m => {
+                        select.innerHTML += `<option value="${m.name}" data-unit="${m.unit}">${m.name} (${m.unit})</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки материалов:', error);
             }
-        });
-
-        // Закрытие модальных окон
-        document.getElementById('cancelStageBtn').addEventListener('click', () => closeModal('addStageModal'));
-        document.getElementById('cancelReadyBtn').addEventListener('click', () => closeModal('addReadyModal'));
-        document.getElementById('cancelEmployeeBtn').addEventListener('click', () => closeModal('addEmployeeModal'));
-        document.getElementById('cancelAcceptBtn').addEventListener('click', () => closeModal('acceptModal'));
-        document.getElementById('cancelRejectBtn').addEventListener('click', () => closeModal('rejectModal'));
-
-        // Кнопки действий
-        document.getElementById('createStageBtn').addEventListener('click', addStage);
-        document.getElementById('createReadyBtn').addEventListener('click', addReady);
-        document.getElementById('createEmployeeBtn').addEventListener('click', addEmployee);
-        document.getElementById('acceptBtn').addEventListener('click', acceptSection);
-        document.getElementById('rejectBtn').addEventListener('click', rejectSection);
-
-        // Загрузка секции
-        function loadSection(section) {
-            if (section === 'stages') loadStages();
-            else if (section === 'ready') loadReady();
-            else if (section === 'accepted') loadAccepted();
-            else if (section === 'stats') loadStats();
-            else if (section === 'employees') loadEmployees();
         }
 
-        // Отправка команды в бота
+        // Отправка данных в бота
         function sendAction(action, data = {}) {
             return new Promise((resolve, reject) => {
                 const messageId = Date.now();
@@ -596,179 +514,189 @@
                 
                 window.addEventListener('message', handler);
                 
-                // Отправляем данные в бота
                 tg.sendData(JSON.stringify({
                     action: action,
                     data: data,
                     messageId: messageId
                 }));
                 
-                // Таймаут на случай если ответ не пришел
                 setTimeout(() => {
                     window.removeEventListener('message', handler);
-                    reject(new Error('Таймаут ожидания ответа'));
+                    reject(new Error('Таймаут'));
                 }, 10000);
             });
         }
 
-        // Загрузка этапов
-        async function loadStages() {
-            const list = document.getElementById('stagesList');
-            list.innerHTML = '<div class="loading">Загрузка этапов...</div>';
+        // Добавление материала
+        window.addMaterial = async function() {
+            const piket = parseInt(document.getElementById('piketNumber').value);
+            const material = document.getElementById('materialSelect').value;
+            const volume = parseFloat(document.getElementById('volume').value);
+            const notes = document.getElementById('notes').value;
+            
+            const select = document.getElementById('materialSelect');
+            const unit = select.options[select.selectedIndex]?.dataset.unit || 'м³';
+            
+            if (!piket || !currentSide || !material || !volume) {
+                tg.showPopup({ message: 'Заполните все поля' });
+                return;
+            }
+            
+            if (piket < 1 || piket > 1000) {
+                tg.showPopup({ message: 'Пикет должен быть от 1 до 1000' });
+                return;
+            }
+            
+            const btn = document.querySelector('.submit-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Отправка...';
+            btn.disabled = true;
             
             try {
-                const response = await sendAction('get_stages');
+                const response = await sendAction('add_material', {
+                    piket: piket,
+                    side: currentSide,
+                    material: material,
+                    volume: volume,
+                    unit: unit,
+                    notes: notes
+                });
                 
-                if (response.data && response.data.length > 0) {
-                    list.innerHTML = '';
-                    response.data.forEach(stage => {
-                        const card = document.createElement('div');
-                        card.className = 'item-card';
-                        card.innerHTML = `
-                            <div class="item-header">
-                                <span class="item-title">${stage.emoji} ${stage.name}</span>
-                                <span class="item-badge">${stage.status}</span>
-                            </div>
-                            <div class="item-details">
-                                <p>📏 ПК${stage.start} - ПК${stage.end}</p>
-                                <p>📊 Слоев: ${stage.layers}</p>
-                                <p>📅 ${stage.date}</p>
-                            </div>
-                        `;
-                        list.appendChild(card);
-                    });
+                if (response.success) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showPopup({ message: '✅ Данные сохранены!' });
+                    
+                    // Очистка полей
+                    document.getElementById('piketNumber').value = '';
+                    document.getElementById('volume').value = '';
+                    document.getElementById('notes').value = '';
+                    currentSide = null;
+                    document.getElementById('leftSideBtn').classList.remove('active');
+                    document.getElementById('rightSideBtn').classList.remove('active');
                 } else {
-                    list.innerHTML = '<div class="item-card">📭 Нет этапов</div>';
+                    tg.showPopup({ message: '❌ Ошибка: ' + response.error });
                 }
             } catch (error) {
-                list.innerHTML = '<div class="item-card">❌ Ошибка загрузки</div>';
+                tg.showPopup({ message: '❌ Ошибка связи' });
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
-        }
+        };
 
-        // Загрузка готовых участков
-        async function loadReady() {
-            const list = document.getElementById('readyList');
-            list.innerHTML = '<div class="loading">Загрузка готовых участков...</div>';
+        // Поиск по пикету
+        window.searchPiket = async function() {
+            const piket = parseInt(document.getElementById('searchPiket').value);
+            if (!piket) {
+                tg.showPopup({ message: 'Введите номер пикета' });
+                return;
+            }
+            
+            const results = document.getElementById('searchResults');
+            results.innerHTML = '<div class="loading">Поиск...</div>';
             
             try {
-                const response = await sendAction('get_ready');
+                const response = await sendAction('get_piket_data', {
+                    piket: piket,
+                    side: currentFilter
+                });
                 
-                if (response.data && response.data.length > 0) {
-                    list.innerHTML = '';
-                    response.data.forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = 'item-card';
-                        
-                        let actions = '';
-                        if (isAdmin) {
-                            actions = `
-                                <div class="item-actions">
-                                    <button class="item-btn btn-accept" onclick="openAcceptModal(${item.id}, '${item.stage_name}', ${item.start}, ${item.end}, ${item.layer})">✅ Принять</button>
-                                    <button class="item-btn btn-reject" onclick="openRejectModal(${item.id}, '${item.stage_name}', ${item.start}, ${item.end}, ${item.layer})">❌ Отклонить</button>
+                if (response.success && response.data) {
+                    if (response.data.length === 0) {
+                        results.innerHTML = '<div class="item-card">📭 Нет данных по этому пикету</div>';
+                    } else {
+                        results.innerHTML = '';
+                        response.data.forEach(item => {
+                            const card = document.createElement('div');
+                            card.className = 'item-card';
+                            card.innerHTML = `
+                                <div class="item-header">
+                                    <span class="item-title">ПК${item.piket}</span>
+                                    <span class="item-badge ${item.side === 'left' ? 'badge-left' : 'badge-right'}">
+                                        ${item.side === 'left' ? '⬅️ Левая' : '➡️ Правая'}
+                                    </span>
+                                </div>
+                                <div class="item-details">
+                                    <p>🧱 ${item.material}</p>
+                                    <p>📦 ${item.volume} ${item.unit}</p>
+                                    <p>📅 ${item.date}</p>
+                                    ${item.notes ? `<p>📝 ${item.notes}</p>` : ''}
                                 </div>
                             `;
-                        }
-                        
-                        card.innerHTML = `
-                            <div class="item-header">
-                                <span class="item-title">${item.stage_name}</span>
-                            </div>
-                            <div class="item-details">
-                                <p>📏 ПК${item.start} - ПК${item.end}</p>
-                                ${item.layer > 1 ? `<p>🔹 Слой: ${item.layer}</p>` : ''}
-                                <p>📅 ${item.date}</p>
-                            </div>
-                            ${actions}
-                        `;
-                        list.appendChild(card);
-                    });
-                } else {
-                    list.innerHTML = '<div class="item-card">📭 Нет готовых участков</div>';
+                            results.appendChild(card);
+                        });
+                    }
                 }
             } catch (error) {
-                list.innerHTML = '<div class="item-card">❌ Ошибка загрузки</div>';
+                results.innerHTML = '<div class="item-card">❌ Ошибка поиска</div>';
             }
-        }
+        };
 
-        // Загрузка сданных участков
-        async function loadAccepted() {
-            const list = document.getElementById('acceptedList');
-            list.innerHTML = '<div class="loading">Загрузка истории сдачи...</div>';
-            
-            try {
-                const response = await sendAction('get_accepted');
-                
-                if (response.data && response.data.length > 0) {
-                    list.innerHTML = '';
-                    response.data.forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = 'item-card';
-                        card.innerHTML = `
-                            <div class="item-header">
-                                <span class="item-title">${item.stage_name}</span>
-                                <span class="item-badge" style="background: ${item.status === 'принято' ? '#2ecc71' : '#e74c3c'}">${item.status}</span>
-                            </div>
-                            <div class="item-details">
-                                <p>📏 ПК${item.start} - ПК${item.end}</p>
-                                ${item.layer > 1 ? `<p>🔹 Слой: ${item.layer}</p>` : ''}
-                                <p>📅 ${item.date}</p>
-                                ${item.reason ? `<p>❌ Причина: ${item.reason}</p>` : ''}
-                            </div>
-                        `;
-                        list.appendChild(card);
-                    });
-                } else {
-                    list.innerHTML = '<div class="item-card">📭 Нет сданных участков</div>';
-                }
-            } catch (error) {
-                list.innerHTML = '<div class="item-card">❌ Ошибка загрузки</div>';
-            }
-        }
+        let currentFilter = null;
+
+        window.filterSide = function(side) {
+            currentFilter = side === 'all' ? null : side;
+            searchPiket();
+        };
 
         // Загрузка статистики
-        async function loadStats() {
+        async function loadStatistics() {
             const container = document.getElementById('statsContent');
-            container.innerHTML = '<div class="loading">Загрузка статистики...</div>';
+            container.innerHTML = '<div class="loading">Загрузка...</div>';
             
             try {
-                const response = await sendAction('get_stats');
+                const response = await sendAction('get_statistics');
                 
-                if (response.data) {
+                if (response.success && response.data) {
                     const stats = response.data;
                     
                     let html = `
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-value">${stats.total_stages}</div>
-                                <div class="stat-label">Этапов</div>
+                                <div class="stat-value">${stats.total_pikets}</div>
+                                <div class="stat-label">Пикетов с данными</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${stats.ready_count}</div>
-                                <div class="stat-label">Готовых</div>
+                                <div class="stat-value">${stats.total_entries}</div>
+                                <div class="stat-label">Всего записей</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${stats.accepted_count}</div>
-                                <div class="stat-label">Сдано</div>
+                                <div class="stat-value">${stats.total_volume.toFixed(2)}</div>
+                                <div class="stat-label">Общий объем</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${stats.employees_count}</div>
-                                <div class="stat-label">Сотрудников</div>
+                                <div class="stat-value">${stats.left_count}</div>
+                                <div class="stat-label">Левая сторона</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${stats.right_count}</div>
+                                <div class="stat-label">Правая сторона</div>
                             </div>
                         </div>
                     `;
                     
-                    if (stats.stage_progress && stats.stage_progress.length > 0) {
-                        html += '<h3 style="margin: 20px 0 10px;">📊 Прогресс по типам работ</h3>';
-                        stats.stage_progress.forEach(item => {
+                    if (stats.materials && stats.materials.length > 0) {
+                        html += '<h3 style="margin: 20px 0 10px;">📊 По материалам</h3>';
+                        stats.materials.forEach(m => {
                             html += `
                                 <div class="item-card">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <span>${item.emoji || '📌'} ${item.name}</span>
-                                        <span>${item.percent}%</span>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>🧱 ${m[0]}</span>
+                                        <span>${m[1].toFixed(2)} ${m[2]}</span>
                                     </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: ${item.percent}%"></div>
-                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    if (stats.recent && stats.recent.length > 0) {
+                        html += '<h3 style="margin: 20px 0 10px;">🕒 Последние записи</h3>';
+                        stats.recent.forEach(r => {
+                            html += `
+                                <div class="item-card">
+                                    <div>ПК${r.piket} ${r.side === 'left' ? '⬅️' : '➡️'}</div>
+                                    <div>${r.material}: ${r.volume} ${r.unit}</div>
+                                    <div style="font-size: 11px;">${r.date}</div>
                                 </div>
                             `;
                         });
@@ -781,314 +709,40 @@
             }
         }
 
-        // Загрузка сотрудников
-        async function loadEmployees() {
-            const list = document.getElementById('employeesList');
-            list.innerHTML = '<div class="loading">Загрузка сотрудников...</div>';
+        // Загрузка отчета
+        window.loadReport = async function(days) {
+            const container = document.getElementById('reportContent');
+            container.innerHTML = '<div class="loading">Загрузка...</div>';
             
             try {
-                const response = await sendAction('get_employees');
+                const response = await sendAction('get_report', { days: days });
                 
-                if (response.data && response.data.length > 0) {
-                    list.innerHTML = '';
-                    response.data.forEach(emp => {
-                        const card = document.createElement('div');
-                        card.className = 'item-card';
-                        card.innerHTML = `
-                            <div class="item-header">
-                                <span class="item-title">${emp.name}</span>
-                                <span class="item-badge">${emp.position}</span>
-                            </div>
-                            <div class="item-details">
-                                <p>📞 ${emp.phone}</p>
-                                <p>📅 ${emp.date}</p>
-                            </div>
-                        `;
-                        list.appendChild(card);
-                    });
-                } else {
-                    list.innerHTML = '<div class="item-card">📭 Нет сотрудников</div>';
+                if (response.success && response.data) {
+                    if (response.data.length === 0) {
+                        container.innerHTML = '<div class="item-card">📭 Нет данных за этот период</div>';
+                    } else {
+                        container.innerHTML = '';
+                        response.data.forEach(day => {
+                            const card = document.createElement('div');
+                            card.className = 'item-card';
+                            card.innerHTML = `
+                                <div class="item-header">
+                                    <span class="item-title">📅 ${day.date}</span>
+                                </div>
+                                <div class="item-details">
+                                    <p>📝 Записей: ${day.entries}</p>
+                                    <p>📏 Пикетов: ${day.pikets}</p>
+                                    <p>📦 Объем: ${day.volume.toFixed(2)} м³</p>
+                                </div>
+                            `;
+                            container.appendChild(card);
+                        });
+                    }
                 }
             } catch (error) {
-                list.innerHTML = '<div class="item-card">❌ Ошибка загрузки</div>';
+                container.innerHTML = '<div class="item-card">❌ Ошибка загрузки</div>';
             }
-        }
-
-        // Загрузка этапов для select
-        async function loadStagesForSelect() {
-            const select = document.getElementById('readyStageSelect');
-            select.innerHTML = '<option>Загрузка...</option>';
-            
-            try {
-                const response = await sendAction('get_stages_for_select');
-                
-                if (response.data && response.data.length > 0) {
-                    select.innerHTML = '';
-                    response.data.forEach(stage => {
-                        const option = document.createElement('option');
-                        option.value = stage.id;
-                        option.textContent = `${stage.name} | ПК${stage.start}-ПК${stage.end} (${stage.layers} слоев)`;
-                        option.dataset.name = stage.name;
-                        option.dataset.layers = stage.layers;
-                        select.appendChild(option);
-                    });
-                } else {
-                    select.innerHTML = '<option>Нет доступных этапов</option>';
-                }
-            } catch (error) {
-                select.innerHTML = '<option>Ошибка загрузки</option>';
-            }
-        }
-
-        // Добавление этапа
-        async function addStage() {
-            console.log("📝 Попытка создания этапа");
-            
-            const name = document.getElementById('stageType').value;
-            const start = parseInt(document.getElementById('stageStart').value);
-            const end = parseInt(document.getElementById('stageEnd').value);
-            const layers = parseInt(document.getElementById('stageLayers').value);
-            
-            console.log("Данные:", {name, start, end, layers});
-            
-            if (!start || !end) {
-                tg.showPopup({ message: 'Введите начальный и конечный пикеты' });
-                return;
-            }
-            
-            if (start < 1400 || end > 1900 || start > end) {
-                tg.showPopup({ message: 'Некорректный диапазон пикетов (должен быть от 1400 до 1900)' });
-                return;
-            }
-            
-            if (layers < 1 || layers > 3) {
-                tg.showPopup({ message: 'Количество слоев должно быть от 1 до 3' });
-                return;
-            }
-            
-            const btn = document.getElementById('createStageBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Отправка...';
-            btn.disabled = true;
-            
-            try {
-                // Отправляем данные в правильном формате
-                const response = await sendAction('add_stage', {
-                    name: name,
-                    start: start,
-                    end: end,
-                    layers: layers
-                });
-                
-                console.log("Ответ от бота:", response);
-                
-                if (response.success) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    closeModal('addStageModal');
-                    loadStages();
-                    tg.showPopup({ message: '✅ Этап успешно создан!' });
-                    
-                    document.getElementById('stageStart').value = '';
-                    document.getElementById('stageEnd').value = '';
-                    document.getElementById('stageLayers').value = '1';
-                } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
-                }
-            } catch (error) {
-                console.error("Ошибка:", error);
-                tg.showPopup({ message: '❌ Ошибка связи с ботом' });
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Добавление готового участка
-        async function addReady() {
-            const select = document.getElementById('readyStageSelect');
-            if (!select.value) {
-                tg.showPopup({ message: 'Выберите этап' });
-                return;
-            }
-            
-            const stageId = parseInt(select.value);
-            const stageName = select.options[select.selectedIndex].dataset.name;
-            const start = parseInt(document.getElementById('readyStart').value);
-            const end = parseInt(document.getElementById('readyEnd').value);
-            const layer = parseInt(document.getElementById('readyLayer').value);
-            
-            if (!start || !end) {
-                tg.showPopup({ message: 'Введите пикеты' });
-                return;
-            }
-            
-            const btn = document.getElementById('createReadyBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Отправка...';
-            btn.disabled = true;
-            
-            try {
-                const response = await sendAction('add_ready', {
-                    stage_id: stageId,
-                    stage_name: stageName,
-                    start: start,
-                    end: end,
-                    layer: layer
-                });
-                
-                if (response.success) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    closeModal('addReadyModal');
-                    loadReady();
-                    tg.showPopup({ message: '✅ Участок отмечен!' });
-                } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
-                }
-            } catch (error) {
-                tg.showPopup({ message: '❌ Ошибка связи с ботом' });
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Добавление сотрудника
-        async function addEmployee() {
-            const name = document.getElementById('employeeName').value;
-            const position = document.getElementById('employeePosition').value;
-            const phone = document.getElementById('employeePhone').value;
-            
-            if (!name || !phone) {
-                tg.showPopup({ message: 'Заполните все поля' });
-                return;
-            }
-            
-            const btn = document.getElementById('createEmployeeBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Отправка...';
-            btn.disabled = true;
-            
-            try {
-                const response = await sendAction('add_employee', {
-                    name: name,
-                    position: position,
-                    phone: phone
-                });
-                
-                if (response.success) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    closeModal('addEmployeeModal');
-                    loadEmployees();
-                    tg.showPopup({ message: '✅ Сотрудник добавлен!' });
-                    
-                    document.getElementById('employeeName').value = '';
-                    document.getElementById('employeePhone').value = '';
-                } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
-                }
-            } catch (error) {
-                tg.showPopup({ message: '❌ Ошибка связи с ботом' });
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Открытие модалки принятия
-        function openAcceptModal(id, name, start, end, layer) {
-            selectedSectionId = id;
-            document.getElementById('acceptInfo').textContent = 
-                `${name} | ПК${start}-ПК${end}${layer > 1 ? ` (слой ${layer})` : ''}`;
-            openModal('acceptModal');
-        }
-
-        // Открытие модалки отклонения
-        function openRejectModal(id, name, start, end, layer) {
-            selectedSectionId = id;
-            document.getElementById('rejectInfo').textContent = 
-                `${name} | ПК${start}-ПК${end}${layer > 1 ? ` (слой ${layer})` : ''}`;
-            openModal('rejectModal');
-        }
-
-        // Принятие участка
-        async function acceptSection() {
-            const btn = document.getElementById('acceptBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Отправка...';
-            btn.disabled = true;
-            
-            try {
-                const response = await sendAction('accept_section', {
-                    section_id: selectedSectionId
-                });
-                
-                if (response.success) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    closeModal('acceptModal');
-                    loadReady();
-                    tg.showPopup({ message: '✅ Участок принят!' });
-                } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
-                }
-            } catch (error) {
-                tg.showPopup({ message: '❌ Ошибка связи с ботом' });
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Отклонение участка
-        async function rejectSection() {
-            const reason = document.getElementById('rejectReason').value;
-            
-            if (!reason) {
-                tg.showPopup({ message: 'Укажите причину отклонения' });
-                return;
-            }
-            
-            const btn = document.getElementById('rejectBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Отправка...';
-            btn.disabled = true;
-            
-            try {
-                const response = await sendAction('reject_section', {
-                    section_id: selectedSectionId,
-                    reason: reason
-                });
-                
-                if (response.success) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    closeModal('rejectModal');
-                    loadReady();
-                    tg.showPopup({ message: '❌ Участок отклонен' });
-                    document.getElementById('rejectReason').value = '';
-                } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
-                }
-            } catch (error) {
-                tg.showPopup({ message: '❌ Ошибка связи с ботом' });
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // Управление модальными окнами
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            if (id === 'rejectModal') {
-                document.getElementById('rejectReason').value = '';
-            }
-        }
-
-        // Загружаем начальную секцию
-        loadSection('stages');
+        };
 
         // Кнопка назад
         tg.BackButton.show();

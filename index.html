@@ -372,7 +372,7 @@
             <div class="form-group">
                 <label>🧱 Материал</label>
                 <select id="materialSelect">
-                    <option value="">Выберите материал</option>
+                    <option value="">Загрузка материалов...</option>
                 </select>
             </div>
             
@@ -480,18 +480,70 @@
 
         // Загрузка материалов
         async function loadMaterials() {
+            console.log("Загрузка материалов...");
+            const select = document.getElementById('materialSelect');
+            select.innerHTML = '<option value="">Загрузка...</option>';
+            
             try {
                 const response = await sendAction('get_materials');
-                if (response.success && response.data) {
+                console.log("Ответ от бота:", response);
+                
+                if (response.success && response.data && response.data.length > 0) {
                     materialsList = response.data;
-                    const select = document.getElementById('materialSelect');
                     select.innerHTML = '<option value="">Выберите материал</option>';
                     response.data.forEach(m => {
-                        select.innerHTML += `<option value="${m.name}" data-unit="${m.unit}">${m.name} (${m.unit})</option>`;
+                        const option = document.createElement('option');
+                        option.value = m.name;
+                        option.textContent = `${m.name} (${m.unit})`;
+                        option.dataset.unit = m.unit;
+                        select.appendChild(option);
+                    });
+                    console.log(`✅ Загружено ${response.data.length} материалов`);
+                } else {
+                    console.error("Нет материалов в ответе, используем запасной список");
+                    // Добавляем материалы по умолчанию на случай ошибки
+                    const defaultMaterials = [
+                        { name: 'Щебень фр. 20-40', unit: 'м³' },
+                        { name: 'Щебень фр. 40-70', unit: 'м³' },
+                        { name: 'Песок', unit: 'м³' },
+                        { name: 'Цемент М500', unit: 'т' },
+                        { name: 'Бетон В25', unit: 'м³' },
+                        { name: 'Асфальт', unit: 'т' },
+                        { name: 'Арматура', unit: 'т' },
+                        { name: 'Грунт', unit: 'м³' }
+                    ];
+                    
+                    select.innerHTML = '<option value="">Выберите материал</option>';
+                    defaultMaterials.forEach(m => {
+                        const option = document.createElement('option');
+                        option.value = m.name;
+                        option.textContent = `${m.name} (${m.unit})`;
+                        option.dataset.unit = m.unit;
+                        select.appendChild(option);
                     });
                 }
             } catch (error) {
                 console.error('Ошибка загрузки материалов:', error);
+                // Добавляем материалы по умолчанию
+                const defaultMaterials = [
+                    { name: 'Щебень фр. 20-40', unit: 'м³' },
+                    { name: 'Щебень фр. 40-70', unit: 'м³' },
+                    { name: 'Песок', unit: 'м³' },
+                    { name: 'Цемент М500', unit: 'т' },
+                    { name: 'Бетон В25', unit: 'м³' },
+                    { name: 'Асфальт', unit: 'т' },
+                    { name: 'Арматура', unit: 'т' },
+                    { name: 'Грунт', unit: 'м³' }
+                ];
+                
+                select.innerHTML = '<option value="">Выберите материал</option>';
+                defaultMaterials.forEach(m => {
+                    const option = document.createElement('option');
+                    option.value = m.name;
+                    option.textContent = `${m.name} (${m.unit})`;
+                    option.dataset.unit = m.unit;
+                    select.appendChild(option);
+                });
             }
         }
 
@@ -547,6 +599,11 @@
                 return;
             }
             
+            if (volume <= 0) {
+                tg.showPopup({ message: 'Объем должен быть больше 0' });
+                return;
+            }
+            
             const btn = document.querySelector('.submit-btn');
             const originalText = btn.textContent;
             btn.textContent = '⏳ Отправка...';
@@ -574,10 +631,10 @@
                     document.getElementById('leftSideBtn').classList.remove('active');
                     document.getElementById('rightSideBtn').classList.remove('active');
                 } else {
-                    tg.showPopup({ message: '❌ Ошибка: ' + response.error });
+                    tg.showPopup({ message: '❌ Ошибка: ' + (response.error || 'Неизвестная ошибка') });
                 }
             } catch (error) {
-                tg.showPopup({ message: '❌ Ошибка связи' });
+                tg.showPopup({ message: '❌ Ошибка связи с сервером' });
             } finally {
                 btn.textContent = originalText;
                 btn.disabled = false;
